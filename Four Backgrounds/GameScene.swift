@@ -6,6 +6,23 @@
 //  Copyright (c) 2016 mitchell hudson. All rights reserved.
 //
 
+/*
+ 
+ This example show how to create an endless scrolling background along two axis. 
+ 
+ There are four background sections, really just Spite nodes, each equal in size 
+ to the scene view. These should be this size or larger. Background sections that 
+ move out of view of the camera move to the left or right, up or down and become 
+ the next background section moving into view. In other words, a background section
+ moving off the left, as the camera moves to the right, is moved to right side of 
+ the currntly visible background section. The same is applied to vertical movement. 
+ 
+ Background sections should be the size of the screen or larger. The example as 
+ written here uses the size of the view. If you make background sections larger
+ you will need to use that size in the scrollSceneNodes() methods.
+ 
+ */
+
 import SpriteKit
 
 class GameScene: SKScene {
@@ -15,14 +32,13 @@ class GameScene: SKScene {
     let joystick = Joystick()
     
     override init(size: CGSize) {
-        print("??????")
         for i in 0 ..< 4 {
-            let hue = CGFloat(arc4random() % 1000) / 1000
+            let hue = CGFloat(i) * 1 / 4
             let background = SKSpriteNode(color: UIColor(hue: hue, saturation: 1, brightness: 1, alpha: 1), size: size)
             background.position.x = CGFloat(i % 2) * size.width
             background.position.y = CGFloat(i / 2) * size.height
             
-            background.anchorPoint = CGPointZero
+            // background.anchorPoint = CGPoint(x: 0, y: 0)
             
             backgrounds.append(background)
         }
@@ -43,7 +59,6 @@ class GameScene: SKScene {
     func setup() {
         for background in backgrounds {
             addChild(background)
-            print(background)
         }
         
         addChild(cameraNode)
@@ -97,18 +112,20 @@ class GameScene: SKScene {
             let x = background.position.x - cameraNode.position.x
             let y = background.position.y - cameraNode.position.y
             
-            if x < -(size.width + view!.frame.width / 2) {
+            if x < -size.width {
                 background.position.x += size.width * 2
-            } else if x > size.width + view!.frame.width / 2 {
+            } else if x > size.width {
                 background.position.x -= size.width * 2
             }
             
-            if y < -(size.height + view!.frame.height / 2) {
+            if y < -size.height {
                 background.position.y += size.height * 2
-            } else if y > size.height + view!.frame.height / 2 {
+            } else if y > size.height {
                 background.position.y -= size.height * 2
             }
         }
+        
+        
     }
 }
 
